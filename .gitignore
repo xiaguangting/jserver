@@ -15,6 +15,3 @@ node_modules
 # My configurations:
 log/*
 .xml
-begin.py
-mysettings.py
-video
