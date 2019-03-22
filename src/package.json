@@ -1,0 +1,24 @@
+{
+  "name": "jserver",
+  "version": "1.0.0",
+  "description": "js server",
+  "main": "jserver.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.16.4",
+    "file-stream-rotator": "^0.4.1",
+    "md5-node": "^1.0.1",
+    "morgan": "^1.9.1",
+    "request": "^2.88.0",
+    "silly-datetime": "^0.1.2"
+  },
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "[git-url-of-your-project]"
+  }
+}

@@ -1,0 +1,70 @@
+#!/bin/bash
+
+# Source function library.
+. /etc/rc.d/init.d/functions
+
+project_path=""
+
+service_name="jserver.js"
+start_file="jserver.sh"
+RETVAL=0
+
+start() {
+    echo -n $"Starting ${start_file}: "
+    cd ${project_path} && sh ${start_file} &
+    RETVAL=$?
+    [ "$RETVAL" -eq 0 ] && success $"${service_name} startup" || failure $"${service_name} startup"
+    echo
+    return $RETVAL
+}
+
+stop() {
+    echo -n $"Stopping ${service_name}: "
+    for pid in `ps ax | grep ${service_name} | grep -v grep | awk '{print $1}'`; do kill -9 $pid; done
+    RETVAL=$?
+    [ "$RETVAL" -eq 0 ] && success $"${service_name} shutdown" || failure $"${service_name} shutdown"
+    echo
+    return $RETVAL
+}
+
+status() {
+    echo -n $"Running ${service_name}: "
+    sn=`ps ax | grep ${service_name} | grep -v grep |awk '{print $1}'`
+    if [ "${sn}" = "" ]    #如果为空,表示进程未启动
+    then
+        failure $"${service_name} not running"
+        RETVAL=1
+    else
+        success $"${service_name} is running"
+        RETVAL=0
+    fi
+
+    echo
+    return $RETVAL
+}
+
+restart () {
+    stop
+    sleep 1
+    start
+}
+
+case "$1" in
+    start)
+        start
+        ;;
+    stop)
+        stop
+        ;;
+    status)
+        status
+        ;;
+    restart)
+        restart
+        ;;
+    *)
+        echo "Usage: $0 {start|stop|status|restart}"
+        exit 2
+esac
+
+exit $RETVAL
