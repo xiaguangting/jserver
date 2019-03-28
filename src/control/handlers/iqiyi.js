@@ -24,7 +24,7 @@ module.exports = function (id) {
     var vid = id[1];
     var tm = (new Date).getTime();
     var authKey = "";
-    var pck = "c8hA1m3UQhPpOjU0k3RvZcXuc0nlPJ3iAjjBsE7Wzn7IbdAzKBQ336lwUWQa1zRLz8I86";  // 用户登入token
+    var pck = "a2m2Yk6lm1PBhyJWPvOTJkvcHWm1arrd85WKj7x8gJam244fMNIkdvUwllm3m1MqQIP9D2l0d9";  // 用户登入token
     var query = "/dash?tvid=" + tvid + "&bid=600&vid=" + vid + "&src=01010031010000000000&vt=0&rs=1&uid=1692811519&ori=pcw&ps=1&tm=" + tm + "&qd_v=1&k_uid=511522715bec2deac59da08dc190d974&pt=0&d=0&s=&lid=&cf=&ct=&ve=" + authKey + "&k_tag=1&ost=0&ppt=0&dfp=a001c902c83312491a8c360829bf091b707a1b1906a66438d04bb74302def9bbd8&locale=zh_cn&prio=%5B%7B%22code%22%3A2%2C%22dr%22%3A-1%7D%5D%0A&pck=" + pck + "&k_err_retries=0&k_ft1=143486267424772&k_ft4=0&bop=%7B%22version%22%3A%227.0%22%2C%22dfp%22%3A%22a001c902c83312491a8c360829bf091b707a1b1906a66438d04bb74302def9bbd8%22%7D&ut=1&ut=5";
     var url = domain + query + "&vf=" + cmd5x(query);
     console.log(url);
