@@ -2,18 +2,25 @@ var request = require('request');  // Http请求函数
 var s = require('../libs/youku');  // 优酷加密算法函数
 var settings = require('../../settings');
 
-module.exports = function (id, lang) {
-    var _m_h5_tk = "b7dcf30d34ba368c92f49670e6c617b4_1553777273321";
-    var _m_h5_tk_enc = "77b04eadae2ca067f6a4e0df8eeafe7a";
-    var url = gen_url(id, _m_h5_tk.split("_")[0]);
-    console.log(url);
+var _m_h5_tk = settings.youku._m_h5_tk;  // 签名加密
+var _m_h5_tk_enc = settings.youku._m_h5_tk_enc;  // cookie验证
+
+module.exports = function (url, lang) {
+    var id = /\/id_(.*)\.h/.exec(url)[1];
     return new Promise((resolve, reject) => {
-        request({
+        request_youku(id, url, resolve, reject)
+    });
+};
+
+
+function request_youku(id, referer, resolve, reject) {
+    var url = gen_url(id, _m_h5_tk.split("_")[0]);
+    request({
             method: 'get',
             url: url,
             headers: {
                 'Content-Type': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.75 Safari/537.36',
-                'Referer': 'https://v.youku.com/v_show/id_' + id + '.html',
+                'Referer': referer,
                 'Cookie': '_m_h5_tk=' + _m_h5_tk + ';_m_h5_tk_enc=' + _m_h5_tk_enc,
                 'Host': 'acs.youku.com'
             }
@@ -23,37 +30,42 @@ module.exports = function (id, lang) {
             }else {
                 try {
                     var json_data = JSON.parse(body.replace("mtopjsonp1(", "").replace(")", ""));
+                    if(JSON.stringify(json_data.data) === '{}'){  // 失败递归
+                        var token_info = extract_token(res.headers['set-cookie']);
+                        _m_h5_tk = token_info[0];
+                        _m_h5_tk_enc = token_info[1];
+                        request_youku(id, referer, resolve, reject);
+                        return
+                    }
                     var stream = json_data.data.data.stream;
-                    var youku_definition_list = settings.definition.youku;
-                    var result = [];
+                    var youku_definition_list = settings.youku.definition;
+                    var list = [];
                     var is_finished = false;
                     for (var i = 0; i < youku_definition_list.length; i++) {
                         if(is_finished){break}
                         for (var j = 0; j < stream.length; j++) {
                             var item = stream[j];
                             var stream_type = item.stream_type;
-                            if(stream_type == youku_definition_list[i]) {
-                                result.push({
+                            if(stream_type === youku_definition_list[i]) {
+                                list.push({
                                     byte_size: item.size,
                                     start_msec: 0,
                                     duration: item.milliseconds_video,
                                     url: item.m3u8_url,
                                 });
-                                resolve(result);
+                                resolve({list: list});
                                 is_finished = true;
                                 break
                             }
                         }
                     }
-                    var lists = [];
-
                 }catch (e) {
                     reject(e)
                 }
             }
         })
-    });
-};
+}
+
 
 function gen_url(video_id, token) {
     var host = "https://acs.youku.com";
@@ -78,7 +90,7 @@ function gen_url(video_id, token) {
         "utid": "iiEJFeiCBSUCASRm0JoxXDuK",  // todo
         "client_ts": parseInt((new Date).getTime() / 1e3),
         "version": "1.2.5",
-        "ckey": "115#1U4nY11O1TZGIDO9M1fW1CsolW1QSJn3104pNgvMy1i2qFZ1YdJWy59jUHJfV5c61tGfVaF1+HZZazWjyry9ASfrrK1vzJEdi/JJhUU4AkNca8pAurPQOSfyetT8ukZQgQkRhEPCOSgUCY9XuzFZASAyeKT8ukNQiFMJhUU4AWNcaB6fyzFQOSRlTRDv5BWQCrW5H6F65jeQSFAFFKjH17Qffq4xHYqjMxk+feAsVNblAvn0u5OVKNLeU3vxPNaVVLEXiFujHk/w4A9uinF918WwJ/UccNZshGkQ8hC5u9uClF0xdx1/4QfXagEXMQHmf0doVuCXPOgAq69ULJ/Vhz6jFdBTSIGQs1qtkyZ8xn4mjsQs+JFq8owzA6nu+dshJ5Esbr/UpRTOCHcKDqq0GIFoCsJWvC1jzNrwWrQ8tZTUD9s1UMf4R7bjqjYatQMGFwn7RR9r+1S8AbQHlDPj2/kcvp/lRP/CRquM0UQXy45zbEXqzObsYTm175VZdlZs+KEhxGLAd+SHUX9ykmAp0wMBlDA9xKSCsAAhQlMtfFSLVEHzdqEfNGtiyNXF3caP3ul2n0qq16flG0D0ZSKSRZEOj9JgCizKIev8aYWD7v3ytJWAUGrvZIMmpwGBmVl0WQjKyLDYl9sVAxKUdFTRnMO802k1PolR5Y0NV5JwZRkc9T3/MSJu"  // todo
+        "ckey": "115#1ftKh51O1TwG9HOwMCfR1CsoyB6VI2AaPgXuuAsuKcGOZLrgfiwUiitkA+6rQhyI132ntkb81MJsobWJhzF1YdgmaTpXyrrQOSfPeKa8O6NQiQJJhEz4AWNcaT6jurPQvIAbfXlCuWZQ8bWRhUU4AWNcaLIEyrrQOSfyeKa8yWNQgQfUIxL6T9w/uT6A95TsMJaMSBWWnMA/wZssorHxEoGx3Yn6kfiSvaSIpm441IWnL50l++YuUf8RM5WSiofMVE8ob+v79xphNSQsnZI/13lyXvHyAHhPuFm+suwFXcZxSwa+9rUF3Be6N2v5kRNB64dPGdLHin/SocKhYQwGi2oYlx98dOioLAaD0rhRrWAyjAA71nGUV5uNdBQYFJBPZNY+nOWw52fXvEVd0xhMcWgFouCBwn3/xwQuV1bjc+tVmt3D4si7wm5yxcI4QRjiVkghl8pTyTXYpynL8YCF1AN8ib/15WUy9SainG8vbHsGr+or/qJ1QI3B7u0LgI/AReocDcJbcDpr+rCc+oCwM30uUBeRJlTFGtrd/orluZ2ho7lgc0t9KzgKI+YCE0/6wljFxOEWGHBe7wpkdHoi6agCWoMo3plEzHN17kZFUsxCjjRuTM66Srs7XW0Tn/JfPfeAfbKBbHFqCQ/iAKI64YY1TjJXsoVjToUF0s1ueLjtl2mwofZXCRYta30S"
     };
     var biz_params = {
         "vid": video_id,
@@ -122,4 +134,24 @@ function gen_url(video_id, token) {
     "&v=" + v + "&timeout=" + timeout + "&YKPid=" + YKPid + "&YKLoginRequest=" + YKLoginRequest +
     "&AntiFlood=" + AntiFlood + "&AntiCreep=" + AntiCreep + "&type=" + type + "&dataType=" + dataType +
     "&callback=" + callback + "&data=" + encodeURIComponent(data);
+}
+
+
+function extract_token(cookies) {
+    var _m_h5_tk_re = /_m_h5_tk=(.*?);/;
+    var _m_h5_tk_enc_re = /_m_h5_tk_enc=(.*?);/;
+    var _m_h5_tk = undefined;
+    var _m_h5_tk_enc = undefined;
+    for(var i=0; i < cookies.length; i++){
+        var _m_h5_tk_result = _m_h5_tk_re.exec(cookies[i]);
+        if(_m_h5_tk_result != null){
+            _m_h5_tk = _m_h5_tk_result[1];
+            continue
+        }
+        var _m_h5_tk_enc_result = _m_h5_tk_enc_re.exec(cookies[i]);
+        if(_m_h5_tk_enc_result != null){
+            _m_h5_tk_enc = _m_h5_tk_enc_result[1]
+        }
+    }
+    return [_m_h5_tk, _m_h5_tk_enc]
 }
