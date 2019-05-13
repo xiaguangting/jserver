@@ -4,6 +4,7 @@ var settings = require('../../settings');
 
 var _m_h5_tk = settings.youku._m_h5_tk;  // 签名加密
 var _m_h5_tk_enc = settings.youku._m_h5_tk_enc;  // cookie验证
+var fail_num = 0;
 
 module.exports = function (url, lang) {
     var id = /\/id_(.*)\.h/.exec(url)[1];
@@ -29,6 +30,7 @@ function request_youku(id, referer, resolve, reject) {
                 console.log(err)
             }else {
                 try {
+                    console.log(body);
                     var json_data = JSON.parse(body.replace("mtopjsonp1(", "").replace(")", ""));
                     if(JSON.stringify(json_data.data) === '{}'){  // 失败递归
                         var token_info = extract_token(res.headers['set-cookie']);
@@ -38,6 +40,19 @@ function request_youku(id, referer, resolve, reject) {
                         return
                     }
                     var stream = json_data.data.data.stream;
+                    if(!stream){
+                        if(fail_num > 200){
+                            fail_num = 0;
+                            throw '请求接口次数达到上限';
+                        }
+                        fail_num = fail_num + 1;
+                        console.log('失败次数:' + fail_num);
+                        setTimeout(function () {
+                            request_youku(id, referer, resolve, reject);
+                        }, 10);
+                        return
+                    }
+                    fail_num = 0;
                     var youku_definition_list = settings.youku.definition;
                     var list = [];
                     var is_finished = false;
