@@ -24,6 +24,7 @@ module.exports = {
                 crack_method(url).then(value => {  // 成功回调
                     res.send(pack_resp_obj(200, "succeed", value));
                 }, value => {  // 失败回调
+                    console.log(value);
                     msg = "Cracking failure";
                     res.send(pack_resp_obj(500, msg))
                 });

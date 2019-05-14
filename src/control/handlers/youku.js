@@ -30,8 +30,10 @@ function request_youku(id, referer, resolve, reject) {
                 console.log(err)
             }else {
                 try {
-                    console.log(body);
-                    var json_data = JSON.parse(body.replace("mtopjsonp1(", "").replace(")", ""));
+                    // console.log(body);
+                    var pattern = /mtopjsonp1\((.*)\)/;
+                    var json_data = JSON.parse(body.match(pattern)[1]);
+                    // console.log(json_data);
                     if(JSON.stringify(json_data.data) === '{}'){  // 失败递归
                         var token_info = extract_token(res.headers['set-cookie']);
                         _m_h5_tk = token_info[0];
@@ -41,15 +43,15 @@ function request_youku(id, referer, resolve, reject) {
                     }
                     var stream = json_data.data.data.stream;
                     if(!stream){
-                        if(fail_num > 200){
+                        if(fail_num > 300){
                             fail_num = 0;
-                            throw '请求接口次数达到上限';
+                            throw '请求优酷接口次数达到上限';
                         }
                         fail_num = fail_num + 1;
-                        console.log('失败次数:' + fail_num);
+                        // console.log('失败次数:' + fail_num);
                         setTimeout(function () {
                             request_youku(id, referer, resolve, reject);
-                        }, 10);
+                        }, 100);
                         return
                     }
                     fail_num = 0;
