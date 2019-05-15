@@ -12,6 +12,15 @@ ln -s /opt/node-v10.3.0-linux-x64/bin/node /usr/local/bin
 ln -s /opt/node-v10.3.0-linux-x64/bin/npm /usr/local/bin
 </pre>
 
+# 配置
+> 文件路径：src/settings.js
+> 配置项
+>> port：端口
+>> iqiyi
+>>> account
+>>>> id：爱奇艺用户ID
+>>>> token：爱奇艺用户时效Token
+
 # 部署
 
 > 相关脚本   
