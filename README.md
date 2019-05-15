@@ -16,5 +16,5 @@ ln -s /opt/node-v10.3.0-linux-x64/bin/npm /usr/local/bin
 >> 服务控制脚本：init.d/jserver   
 
 > 服务部署
->> 1.执行安装依赖包脚本   
->> 2.执行服务控制脚本
+>> 执行安装依赖包脚本   
+>> 执行服务控制脚本
