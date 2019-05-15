@@ -1,5 +1,5 @@
 # 环境
-* nodejs
+> nodejs
 <pre>
 wget https://npm.taobao.org/mirrors/node/v10.3.0/node-v10.3.0-linux-x64.tar.xz
 xz -d node-v10.3.0-linux-x64.tar.xz
