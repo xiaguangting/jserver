@@ -96,6 +96,7 @@ function gen_video_url(path, t, ptime){  // 获取二级链接
         var QY00001 = settings.iqiyi.account[0].id;
         var qyid = "";
         var qypid = "";
+        var vid = "";
         return domain + path + "&cross-domain=1&qyid=" + qyid + "&qypid=" + qypid + "&t=" + t + "&vid=" + vid + "&ibt=" + ibt + "&cid=afbe8fd3d73448c9&ib=4&ptime=" + ptime + "&qypid=" + qypid + "&QY00001=" + QY00001;
     }else{  // 非VIP视频
         return domain + path;

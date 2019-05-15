@@ -9,12 +9,13 @@ var fail_num = 0;
 module.exports = function (url, lang) {
     var id = /\/id_(.*)\.h/.exec(url)[1];
     return new Promise((resolve, reject) => {
-        request_youku(id, url, resolve, reject)
+        request_youku_web(id, url, resolve, reject)  // 优酷WEB端播放破解
+        // request_youku_h5(id, url, resolve, reject)  // 优酷H5端播放破解(待开发)
     });
 };
 
 
-function request_youku(id, referer, resolve, reject) {
+function request_youku_web(id, referer, resolve, reject) {
     var url = gen_url(id, _m_h5_tk.split("_")[0]);
     request({
             method: 'get',
@@ -38,7 +39,7 @@ function request_youku(id, referer, resolve, reject) {
                         var token_info = extract_token(res.headers['set-cookie']);
                         _m_h5_tk = token_info[0];
                         _m_h5_tk_enc = token_info[1];
-                        request_youku(id, referer, resolve, reject);
+                        request_youku_web(id, referer, resolve, reject);
                         return
                     }
                     var stream = json_data.data.data.stream;
@@ -50,7 +51,7 @@ function request_youku(id, referer, resolve, reject) {
                         fail_num = fail_num + 1;
                         // console.log('失败次数:' + fail_num);
                         setTimeout(function () {
-                            request_youku(id, referer, resolve, reject);
+                            request_youku_web(id, referer, resolve, reject);
                         }, 100);
                         return
                     }
@@ -171,4 +172,20 @@ function extract_token(cookies) {
         }
     }
     return [_m_h5_tk, _m_h5_tk_enc]
+}
+
+function request_youku_h5(id, referer, resolve, reject) {  // 优酷H5端播放破解(待开发)
+    var url = 'https://ups.youku.com/ups/get.json?vid=' + id + '&ccode=0501&client_ip=0.0.0.0&client_ts=1557831321&fu=0&vr=0&rst=mp4&dq=mp4&os=android&bt=phone&bd=&tict=0&d=0&needbf=1&site=1&aw=w&vs=1.0&pver=1&wintype=xplayer_m3u8&play_ability=1024&utid=eoRhFUYvel8CASRm0JrYC11A&ckey=117%239SEIwa9l91bSsxRefO1yncycTEIjj2FcUWcgBnFWkIu8ZNfWlvY9OzjbKUJpZId9z%2BV6KbmpOBFRBkjumpv9RdZRASatm6u5td8DAQgqOIFRBkRPZQM9OdVRAkGGmt49B%2Bf6KbmpOBFRBzY4ZZNhA6uxAkGGChMT1%2B%2FKIb2jRkldgfQx00tpmxjpTMEh073RBkVg6%2FehaDwRoxQy0nZUw%2BfLTKEh0CBOBkVgc9MKv8RywfSR0XtnIYFLTMbh0CIn8kFg6%2FPiIpYkQNky00PTcEfLTMFiiCmCBkZg6WPhILVRocQR0XtnIYFLTKNhiCZSB%2FGF25dD0bwHTeR8bxya4puswBmpfgH08yH%2FWQAIfzmJDA7CkEGQcNRApkM9Scr7J0FqltVY%2BbCBac5K1d6LTLRRqriSS6mS74ogV9wfwAKuBpP2urTuO3aPeKEtX3DWJ9gV2fBMJ1UunWTvO8Dx1sGBOqFP3n2Vn8VVEwZGGVX35vF%2BgibRVbIlzOhV%2B4k5qwfH3W22ZPD%2FPeVeXHfoXGe4sbJXrNYZQLV9iI06BE%2FaMAkE6om0T3sDUep19CyE';
+    request(
+        {
+            method: 'get',
+            url: url,
+            headers: {
+                'Content-Type': settings.user_agent[1],
+                'Referer': referer,
+            }
+        }, function (err, res, body) {
+            console.log(body)
+        }
+    )
 }
