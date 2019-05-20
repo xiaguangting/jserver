@@ -42,10 +42,10 @@ jserver
 > 配置项
 <pre>
 port  // 端口
-	iqiyi  // 爱奇艺
+iqiyi  // 爱奇艺
 	account  // 账户  
-	id  // 用户ID    
-	token  // 用户时效Token
+		id  // 用户ID    
+		token  // 用户时效Token
 </pre>
 
 # 部署
