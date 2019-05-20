@@ -16,6 +16,8 @@ ln -s /opt/node-v10.3.0-linux-x64/bin/npm /usr/local/bin
 # 代码
 <pre>
 jserver
+	assist
+		bee.py  // 蜜蜂(视频下载脚本|开发中)
 	init.d  // 服务脚本
 		jserver
 	src  // 源码
