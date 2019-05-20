@@ -40,11 +40,13 @@ jserver
 # 配置
 > 文件路径：src/settings.js   
 > 配置项
->> port  // 端口   
->> iqiyi  // 爱奇艺
->>> account  // 账户  
->>>> id  // 用户ID    
->>>> token  // 用户时效Token
+<pre>
+port  // 端口
+	iqiyi  // 爱奇艺
+	account  // 账户  
+	id  // 用户ID    
+	token  // 用户时效Token
+</pre>
 
 # 部署
 
