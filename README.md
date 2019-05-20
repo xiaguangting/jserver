@@ -13,6 +13,30 @@ ln -s /opt/node-v10.3.0-linux-x64/bin/node /usr/local/bin
 ln -s /opt/node-v10.3.0-linux-x64/bin/npm /usr/local/bin
 </pre>
 
+# 代码
+<pre>
+jserver
+	init.d  // 服务脚本
+		jserver
+	src  // 源码
+		control  // 控制
+			router.js  // URL路由
+			scheduler.js  // 调度处理器
+			handlers  // 处理的主要JS
+				iqiyi.js
+				youku.js
+			libs  // 依赖的JS
+				iqiyi.js
+				youku.js
+		jserver.js  // Http服务主JS
+		settings.js  // 配置JS
+		package.json  // 相关说明
+		package-lock.json  // 锁定包
+		node_modules  // 第三方包文件夹，不用理会
+	install_package.sh  // 更新包脚本，一般在第一次部署执行或者有新包加入
+	jserver.sh  // 直接运行脚本
+</pre>
+
 # 配置
 > 文件路径：src/settings.js   
 > 配置项
