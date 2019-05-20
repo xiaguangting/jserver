@@ -39,7 +39,6 @@ jserver
 
 # 配置
 > 文件路径：src/settings.js   
-> 配置项
 <pre>
 port  // 端口
 iqiyi  // 爱奇艺
