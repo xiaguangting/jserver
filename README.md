@@ -44,7 +44,7 @@ jserver
 <pre>
 port  // 端口
 iqiyi  // 爱奇艺
-	account  // 账户  
+	account  // 账户(账户信息是针对VIP视频提取所必须，且这个账户需要是VIP)  
 		id  // 用户ID    
 		token  // 用户时效Token
 </pre>
